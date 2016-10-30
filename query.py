@@ -179,17 +179,49 @@ WHERE models.brand_name != %(brand_name_1)s
 
 # Fill in the following functions. (See directions for more info.)
 
+
 def get_model_info(year):
     '''Takes in a year, and prints out each model, brand_name, and brand
     headquarters for that year using only ONE database query.'''
 
-    pass
+    models_list = db.session.query(Model.name, Model.brand_name,
+                                   Brand.headquarters
+                                   ).join(Brand).filter(Model.year == year).all()
+
+    if models_list:
+        print "Models from year:", year
+        for model in models_list:
+            print "%s: made by %s, headquartered in %s" % (
+                model[0], model[1], model[2])
+    else:
+        print "No models found matching year: %s" % (year)
+    return
+
 
 def get_brands_summary():
     '''Prints out each brand name, and each model name for that brand
      using only ONE database query.'''
 
-    pass
+    # I originally ordered this list by brand name then model, but conversion
+    # to dictionary below makes this pointless, so the query is run per line 208
+    # brands_and_models_list = db.session.query(Brand.name, Model.name).outerjoin(Model).group_by(Brand.name, Model.name).order_by(Brand.name, Model.name).all()
+    brands_and_models_list = db.session.query(
+        Brand.name, Model.name).outerjoin(Model).group_by(
+        Brand.name, Model.name).all()
+
+    brands_and_models_dict = {}
+
+    for k, v in brands_and_models_list:
+        brands_and_models_dict.setdefault(k, []).append(v)
+
+    for brand in brands_and_models_dict.keys():
+        print "Brand: \t%s" % (brand)
+        print "Model(s): "
+        for model in brands_and_models_dict.get(brand):
+            print "\t", model
+        print "\n",
+
+    return
 
 # -------------------------------------------------------------------
 # Part 2.5: Discussion Questions (Include your answers as comments.)
@@ -205,7 +237,6 @@ def get_brands_summary():
 
 def search_brands_by_name(mystr):
     pass
-
 
 def get_models_between(start_year, end_year):
     pass
