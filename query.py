@@ -276,7 +276,7 @@ def search_brands_by_name(mystr):
     Input string is passed to the function, which then searches the database
     for brand names that contain or are equal to the string. The search is
     lower-/upper-case agnostic. Results are returned as a list of objects that
-    are representative of rows in the database.
+    are representative of rows in the database. If no matches, 
 
     Example output: **Do not run as DocTests because timestamp will not match**
         >>> search_brands_by_name('b')
@@ -295,8 +295,43 @@ def search_brands_by_name(mystr):
 
     brand_result = Brand.query.filter(
         Brand.name.ilike(str('%' + mystr + '%'))).all()
-    return brand_result
+
+    if not brand_result:
+        print "No results found for '%s'" % (mystr)
+        return
+    else:
+        return brand_result
 
 
 def get_models_between(start_year, end_year):
-    pass
+    """ Takes two years as input and finds matching models in the database.
+
+    Two years are passed to the function, which then searches the database
+    for models with years that fall between the start year (inclusive) and the
+    end year (exclusive).Results are returned as a list of objects that are
+    representative of rows in the database.
+
+    Example output: **Do not run as DocTests because timestamp will not match**
+        >>> get_models_between(1953, 1959)
+        2016-10-30 19:39:14,308 INFO sqlalchemy.engine.base.Engine select version()
+        2016-10-30 19:39:14,309 INFO sqlalchemy.engine.base.Engine {}
+        2016-10-30 19:39:14,310 INFO sqlalchemy.engine.base.Engine select current_schema()
+        2016-10-30 19:39:14,311 INFO sqlalchemy.engine.base.Engine {}
+        2016-10-30 19:39:14,312 INFO sqlalchemy.engine.base.Engine SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+        2016-10-30 19:39:14,312 INFO sqlalchemy.engine.base.Engine {}
+        2016-10-30 19:39:14,313 INFO sqlalchemy.engine.base.Engine SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+        2016-10-30 19:39:14,313 INFO sqlalchemy.engine.base.Engine {}
+        2016-10-30 19:39:14,315 INFO sqlalchemy.engine.base.Engine show standard_conforming_strings
+        2016-10-30 19:39:14,315 INFO sqlalchemy.engine.base.Engine {}
+        2016-10-30 19:39:14,317 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+        2016-10-30 19:39:14,319 INFO sqlalchemy.engine.base.Engine SELECT models.id AS models_id, models.year AS models_year, models.brand_name AS models_brand_name, models.name AS models_name
+        FROM models
+        WHERE models.year >= %(year_1)s AND models.year < %(year_2)s
+        2016-10-30 19:39:14,320 INFO sqlalchemy.engine.base.Engine {'year_1': 1953, 'year_2': 1959}
+        [<Car Model id=4 year=1953 name=Corvette brand=Chevrolet>, <Car Model id=5 year=1954 name=Corvette brand=Chevrolet>, <Car Model id=6 year=1954 name=Fleetwood brand=Cadillac>, <Car Model id=7 year=1955 name=Corvette brand=Chevrolet>, <Car Model id=8 year=1955 name=Thunderbird brand=Ford>, <Car Model id=9 year=1956 name=Corvette brand=Chevrolet>, <Car Model id=10 year=1957 name=Corvette brand=Chevrolet>, <Car Model id=11 year=1957 name=600 brand=BMW>, <Car Model id=12 year=1958 name=Corvette brand=Chevrolet>, <Car Model id=13 year=1958 name=600 brand=BMW>, <Car Model id=14 year=1958 name=Thunderbird brand=Ford>]
+    """
+
+    model_result = Model.query.filter(
+        Model.year >= start_year, Model.year < end_year).all()
+
+    return model_result
