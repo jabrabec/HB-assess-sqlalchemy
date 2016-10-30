@@ -297,7 +297,7 @@ def search_brands_by_name(mystr):
         Brand.name.ilike(str('%' + mystr + '%'))).all()
 
     if not brand_result:
-        print "No results found for '%s'" % (mystr)
+        print "No results found for '%s'." % (mystr)
         return
     else:
         return brand_result
@@ -334,4 +334,8 @@ def get_models_between(start_year, end_year):
     model_result = Model.query.filter(
         Model.year >= start_year, Model.year < end_year).all()
 
-    return model_result
+    if not model_result:
+        print "No results found between years %s - %s." % (start_year, end_year)
+        return
+    else:
+        return model_result
