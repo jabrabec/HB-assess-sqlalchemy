@@ -202,9 +202,13 @@ def get_brands_summary():
     '''Prints out each brand name, and each model name for that brand
      using only ONE database query.'''
 
-    # I originally ordered this list by brand name then model, but conversion
-    # to dictionary below makes this pointless, so the query is run per line 208
-    # brands_and_models_list = db.session.query(Brand.name, Model.name).outerjoin(Model).group_by(Brand.name, Model.name).order_by(Brand.name, Model.name).all()
+    # I originally ordered this list by brand name then model, as in line 209,
+    # but conversion to dictionary below makes this pointless, so the query is
+    # run per line 212 instead.
+
+    # brands_and_models_list = db.session.query(
+    #     Brand.name, Model.name).outerjoin(Model).group_by(
+    #     Brand.name, Model.name).order_by(Brand.name, Model.name).all()
     brands_and_models_list = db.session.query(
         Brand.name, Model.name).outerjoin(Model).group_by(
         Brand.name, Model.name).all()
@@ -228,15 +232,47 @@ def get_brands_summary():
 
 # 1. What is the returned value and datatype of
 # ``Brand.query.filter_by(name='Ford')``?
+"""
+The returned value & datatype for this statement is a SQL Alchemy query object:
+    >>> Brand.query.filter_by(name='Ford')
+    <flask_sqlalchemy.BaseQuery object at 0x7f2afab2f7d0>
+Without a final .all()/.get()/etc method added to the statement, it won't return
+an actual database result, but rather a query object. The query object
+represents some of the 'magic' behind SQL Alchemy where database queries are
+represented as objects. This is the core of SQL Alchemy's advantageousness: it
+provides a Python object relational mapper (ORM) framework. With classes that
+map to tables in the database, the hierarchical organization of data can
+potentially be more clear for users, as long as they are familiar with the ORM.
+"""
 
 # 2. In your own words, what is an association table, and what *type* of
 # relationship does an association table manage?
+"""
+An association table is one of two types of tables (the other being a middle
+table) that can serve as the intermediary between two other tables in a
+database. In cases where a many:many relationship is determined to be
+appropriate between some type of thing and another, a middle or association
+table would be appropriate to link them together. An association table is the
+best way to represent a truly many:many relationship (e.g. many books:many
+genres), because it holds no meaningful data itself, and simply serves to link
+rows in one table to rows in the other. In a diagram of the database schema,
+both association and middle tables are positionally located between the two
+tables that they link together, but association tables won't contain anything
+but representational links (e.g. through foreign key assignments) to the two
+other tables. In contrast, a middle table serves a similar purpose, and the
+database can't distinguish it from an association table, but it contains other
+meaningful information that an association table would not (e.g. if many users
+can review many books, a review table in between them would be a middle table to
+link a single review of one book to a single user).
+"""
 
 # -------------------------------------------------------------------
 # Part 3
 
+
 def search_brands_by_name(mystr):
     pass
+
 
 def get_models_between(start_year, end_year):
     pass
