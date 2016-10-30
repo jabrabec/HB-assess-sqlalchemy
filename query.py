@@ -271,7 +271,31 @@ link a single review of one book to a single user).
 
 
 def search_brands_by_name(mystr):
-    pass
+    """ Takes any input string and finds matching brands in the database.
+
+    Input string is passed to the function, which then searches the database
+    for brand names that contain or are equal to the string. The search is
+    lower-/upper-case agnostic. Results are returned as a list of objects that
+    are representative of rows in the database.
+
+    Example output: **Do not run as DocTests because timestamp will not match**
+        >>> search_brands_by_name('b')
+        2016-10-30 19:19:21,778 INFO sqlalchemy.engine.base.Engine SELECT brands.id AS brands_id, brands.name AS brands_name, brands.founded AS brands_founded, brands.headquarters AS brands_headquarters, brands.discontinued AS brands_discontinued
+        FROM brands
+        WHERE brands.name ILIKE %(name_1)s
+        2016-10-30 19:19:21,778 INFO sqlalchemy.engine.base.Engine {'name_1': '%b%'}
+        [<Car Brand id=7 name=BMW>, <Car Brand id=10 name=Studebaker>, <Car Brand id=12 name=Buick>, <Car Brand id=13 name=Rambler>]
+        >>> search_brands_by_name('OR')
+        2016-10-30 19:22:35,307 INFO sqlalchemy.engine.base.Engine SELECT brands.id AS brands_id, brands.name AS brands_name, brands.founded AS brands_founded, brands.headquarters AS brands_headquarters, brands.discontinued AS brands_discontinued
+        FROM brands
+        WHERE brands.name ILIKE %(name_1)s
+        2016-10-30 19:22:35,307 INFO sqlalchemy.engine.base.Engine {'name_1': '%OR%'}
+        [<Car Brand id=1 name=Ford>, <Car Brand id=9 name=Fairthorpe>]
+    """
+
+    brand_result = Brand.query.filter(
+        Brand.name.ilike(str('%' + mystr + '%'))).all()
+    return brand_result
 
 
 def get_models_between(start_year, end_year):
