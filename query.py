@@ -138,7 +138,7 @@ WHERE brands.founded < %(founded_1)s OR brands.discontinued IS NOT NULL
 <Car Brand id=13 name=Rambler>, <Car Brand id=14 name=Plymouth>]"""
 
 # Get all models whose brand_name is not Chevrolet.
-""">>> Model.query.filter(Model.brand_name!= 'Chevrolet').all()
+""">>> Model.query.filter(Model.brand_name != 'Chevrolet').all()
 2016-10-30 01:38:34,480 INFO sqlalchemy.engine.base.Engine SELECT models.id AS models_id, models.year AS models_year, models.brand_name AS models_brand_name, models.name AS models_name
 FROM models
 WHERE models.brand_name != %(brand_name_1)s
@@ -181,8 +181,8 @@ WHERE models.brand_name != %(brand_name_1)s
 
 
 def get_model_info(year):
-    '''Takes in a year, and prints out each model, brand_name, and brand
-    headquarters for that year using only ONE database query.'''
+    """Takes in a year, and prints out each model, brand_name, and brand
+    headquarters for that year using only ONE database query."""
 
     models_list = db.session.query(Model.name, Model.brand_name,
                                    Brand.headquarters
@@ -199,8 +199,8 @@ def get_model_info(year):
 
 
 def get_brands_summary():
-    '''Prints out each brand name, and each model name for that brand
-     using only ONE database query.'''
+    """Prints out each brand name, and each model name for that brand
+    using only ONE database query."""
 
     # I originally ordered this list by brand name then model, as in line 209,
     # but conversion to dictionary below makes this pointless, so the query is
@@ -276,7 +276,8 @@ def search_brands_by_name(mystr):
     Input string is passed to the function, which then searches the database
     for brand names that contain or are equal to the string. The search is
     lower-/upper-case agnostic. Results are returned as a list of objects that
-    are representative of rows in the database. If no matches, 
+    are representative of rows in the database. If no matches, function will
+    return a statement indicating so.
 
     Example output: **Do not run as DocTests because timestamp will not match**
         >>> search_brands_by_name('b')
@@ -309,7 +310,8 @@ def get_models_between(start_year, end_year):
     Two years are passed to the function, which then searches the database
     for models with years that fall between the start year (inclusive) and the
     end year (exclusive).Results are returned as a list of objects that are
-    representative of rows in the database.
+    representative of rows in the database. If no matches, function will return
+    a statement indicating so.
 
     Example output: **Do not run as DocTests because timestamp will not match**
         >>> get_models_between(1953, 1959)
