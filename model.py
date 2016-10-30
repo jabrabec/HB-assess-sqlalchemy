@@ -26,6 +26,12 @@ class Model(db.Model):
 
     brand = db.relationship('Brand', backref='models')
 
+    def __repr__(self):
+        """Show info about car models."""
+
+        return "<Car Model id=%s year=%s name=%s brand=%s>" % (
+            self.id, self.year, self.name, self.brand_name)
+
 
 class Brand(db.Model):
     """Car brand."""
@@ -36,6 +42,11 @@ class Brand(db.Model):
     founded = db.Column(db.Integer, nullable=True)
     headquarters = db.Column(db.String(50), nullable=True)
     discontinued = db.Column(db.Integer, nullable=True)
+
+    def __repr__(self):
+        """Show info about car brands."""
+
+        return "<Car Brand id=%s name=%s>" % (self.id, self.name)
 
 
 # End Part 1
